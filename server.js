@@ -9,40 +9,29 @@ dotenv.config();
 const app = express();
 
 app.use(express.json());
-app.use(express.static("public"));
 
-mongoose.connect(process.env.MONGO_URL)
-    .then(() => {
-        console.log("MongoDB connected");
-    })
-    .catch((error) => {
-        console.log("MongoDB connection error:", error.message);
-    });
+app.get("/", (req, res) => {
+    res.sendFile(__dirname + "/public/index.html");
+});
 
-
-// GET ALL PROJECTS
 app.get("/api/projects", async (req, res) => {
     try {
         const projects = await Project.find();
         res.json(projects);
     } catch (error) {
-        console.log(error);
         res.status(500).json({
             message: "Unable to get projects"
         });
     }
 });
 
-
-// ADD PROJECT
 app.post("/api/projects", async (req, res) => {
     try {
         const project = new Project({
-            title: req.body.title,
+            name: req.body.name,
             description: req.body.description,
             technologies: req.body.technologies,
-            github: req.body.github,
-            live: req.body.live
+            github: req.body.github
         });
 
         const savedProject = await project.save();
@@ -50,15 +39,12 @@ app.post("/api/projects", async (req, res) => {
         res.status(201).json(savedProject);
 
     } catch (error) {
-        console.log(error);
         res.status(500).json({
             message: "Unable to add project"
         });
     }
 });
 
-
-// CONTACT
 app.post("/api/contact", (req, res) => {
     console.log("Contact message received:");
     console.log(req.body);
@@ -68,9 +54,18 @@ app.post("/api/contact", (req, res) => {
     });
 });
 
+mongoose.connect(process.env.MONGO_URL)
+    .then(() => {
+        console.log("MongoDB connected");
+    })
+    .catch((error) => {
+        console.log("MongoDB connection error:", error.message);
+    });
 
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
     console.log(`Server running at http://localhost:${PORT}`);
 });
+
+module.exports = app;
