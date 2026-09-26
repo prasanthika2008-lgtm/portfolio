@@ -14,11 +14,10 @@ async function loadProjects() {
 
         projects.forEach(project => {
             const card = document.createElement("div");
-
             card.className = "project-card";
 
             card.innerHTML = `
-                <h3>${project.name}</h3>
+             <h3>${project.title}</h3>
                 <p>${project.description}</p>
                 <p><strong>Technologies:</strong> ${project.technologies}</p>
                 ${
@@ -36,6 +35,7 @@ async function loadProjects() {
             "<p>Unable to load projects.</p>";
     }
 }
+
 
 const contactForm = document.getElementById("contactForm");
 
@@ -73,5 +73,6 @@ contactForm.addEventListener("submit", async function(event) {
             "Something went wrong.";
     }
 });
+
 
 loadProjects();
